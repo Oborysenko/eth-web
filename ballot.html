@@ -16,11 +16,14 @@
     <div id="diff"></div>
     <h1>Test section</h1>	
 	<div id="Address">0xabfa1250e9d8c2ef6a17717f7bb47667fca6036f</div>
-	<div id="Vote">5</div>
 	<div id="WinningProposal"></div>
     <h3>Vote from</h3>
 	<div id="radio_home"></div>
-
+	<form>
+	Vote:<br>
+	<input type="text" name="vote_form"><br>
+	</form>
+	<button type="button" onClick="voteWeb();">Vote</button>
 	<script type="text/javascript">
 	
 		var Web3 = require('web3');
@@ -41,18 +44,17 @@
 
 			//   ballot = contract.at("0xabfa1250e9d8c2ef6a17717f7bb47667fca6036f");
 		
-		
+		/*
 				var coinbase = web3.eth.coinbase;
 				var vote_val = document.getElementById("Vote").innerText;
 				var vote_rez = ballot.vote(vote_val);
-				var winningProposal_val = ballot.winningProposal();
+				var winningProposal_val = ballot.winningProposal();*/
 				
 				document.getElementById("Address").innerText = vote_rez;
 				document.getElementById("WinningProposal").innerText = winningProposal_val;
 		}
 		
-		function grantVote(from_address) {
-			var from_address = document.getElementById("Vote").innerText
+		function getCheckedAddress() {
 			var account = document.getElementsByName('account');
 			var account_value;
 			for(var i = 0; i < account.length; i++){
@@ -60,6 +62,16 @@
 					from_address = account[i].value;
 				}
 			}
+			return from_address;
+		}
+		
+		function voteWeb() {
+			var vote_val = document.getElementsByName("vote_form")[0].value;
+			var from_address = getCheckedAddress();
+			ballot.giveRightToVote(from_address);
+			web3.eth.defaultAccount = from_address;
+			var vote_rez = ballot.vote(vote_val);			
+			
 		}
 		
 // Creating button

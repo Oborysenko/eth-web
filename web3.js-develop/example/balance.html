@@ -2,15 +2,13 @@
 <html>
 
 <head>
-<script type="text/javascript" src="scripts/bignumber.js"></script>
-<script data-main="scripts/main" src="scripts/require.js"></script>
-<script type="text/javascript" src="./dist/web3-light.js"></script>
+<script type="text/javascript" src="../node_modules/bignumber.js/bignumber.min.js"></script>
+<script type="text/javascript" src="../dist/web3-light.js"></script>
 <script type="text/javascript">
-
+   
     var Web3 = require('web3');
     var web3 = new Web3();
-    web3.setProvider(new web3.providers.HttpProvider("http://localhost:8080"));
-   
+    web3.setProvider(new web3.providers.HttpProvider());
 
     function watchBalance() {
         var coinbase = web3.eth.coinbase;

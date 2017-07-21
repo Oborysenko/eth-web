@@ -1,0 +1,86 @@
+<!doctype>
+<html>
+
+<head>
+<script type="text/javascript" src="scripts/bignumber.js"></script>
+<script type="text/javascript" src="./dist/web3-light.js"></script>
+
+</head>
+<body>
+    <h1>coinbase balance</h1>
+    <button type="button" onClick="watchBalance();">watch balance</button>
+    <div></div>
+    <div id="coinbase"></div>
+    <div id="original"></div>
+    <div id="current"></div>
+    <div id="diff"></div>
+    <h1>Test section</h1>	
+	<div id="Address">0xabfa1250e9d8c2ef6a17717f7bb47667fca6036f</div>
+	<div id="Vote">5</div>
+	<div id="WinningProposal"></div>
+    <h3>Vote from</h3>
+	<div id="radio_home"></div>
+
+	<script type="text/javascript">
+	
+		var Web3 = require('web3');
+		var web3 = new Web3();
+		web3.setProvider(new web3.providers.HttpProvider("http://localhost:8080"));
+	
+		var contractDesc = [{"constant":false,"inputs":[{"name":"to","type":"address"}],"name":"delegate","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"winningProposal","outputs":[{"name":"winningProposal","type":"uint8"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"voter","type":"address"}],"name":"giveRightToVote","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"proposal","type":"uint8"}],"name":"vote","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"_numProposals","type":"uint8"}],"payable":false,"type":"constructor"}];
+
+		web3.personal.unlockAccount(web3.eth.coinbase, "123", 0);
+		web3.eth.defaultAccount = web3.eth.coinbase;
+
+		var contract_adr = document.getElementById("Address").innerText;
+		var contract = web3.eth.contract(contractDesc);
+		var ballot = contract.at(contract_adr);;
+
+	
+		function watchBalance() {
+
+			//   ballot = contract.at("0xabfa1250e9d8c2ef6a17717f7bb47667fca6036f");
+		
+		
+				var coinbase = web3.eth.coinbase;
+				var vote_val = document.getElementById("Vote").innerText;
+				var vote_rez = ballot.vote(vote_val);
+				var winningProposal_val = ballot.winningProposal();
+				
+				document.getElementById("Address").innerText = vote_rez;
+				document.getElementById("WinningProposal").innerText = winningProposal_val;
+		}
+		
+		function grantVote(from_address) {
+			var from_address = document.getElementById("Vote").innerText
+			var account = document.getElementsByName('account');
+			var account_value;
+			for(var i = 0; i < account.length; i++){
+				if(account[i].checked){
+					from_address = account[i].value;
+				}
+			}
+		}
+		
+// Creating button
+		var radio_home = document.getElementById("radio_home");
+		function makeRadioButton() {
+			var label = document.createElement("label");		
+			var radio = web3.eth.accounts;
+			for (i = 0; i < radio.length; i++) { 
+				radio[i] = document.createElement("input");
+				radio[i].type = "radio";
+				radio[i].name = "account";
+				radio[i].value = web3.eth.accounts[i];
+				label.appendChild(radio[i])
+				label.appendChild(document.createTextNode(radio[i].value));
+				label.appendChild(document.createElement('br'));
+			}
+			return label;
+		}
+		var yes_button = makeRadioButton();
+		radio_home.appendChild(yes_button);  
+	</script>
+</body>
+</html>
+
